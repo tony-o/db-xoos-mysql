@@ -1,0 +1,41 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: tonyodell/rakudo-nightly:latest
+        environment:
+          XOOS_TEST: mysql://user:passw0rd@localhost/test_db
+      - image: circleci/mysql:8.0.4
+        environment:
+          MYSQL_ROOT_PASSWORD: rootpw
+          MYSQL_DATABASE: test_db
+          MYSQL_USER: user
+          MYSQL_PASSWORD: passw0rd
+
+    working_directory: ~
+
+    steps:
+      - checkout
+			- run:
+          name: Waiting for MySQL to be ready
+          command: |
+							for i in `seq 1 10`;
+							do
+								nc -z 127.0.0.1 3306 && echo Success && exit 0
+								echo -n .
+								sleep 1
+							done
+							echo Failed waiting for MySQL && exit 1
+      - run: 
+          name: install build deps
+          command: |
+              apt install -y default-mysql-client
+              zef install --deps-only .
+      - run:
+          name: setup db
+          command: |
+              mysql -h 127.0.0.1 -u user -ppassw0rd test_db < ./sql/tests.sql
+      - run:
+          name: test 
+          command: |
+              zef test .
