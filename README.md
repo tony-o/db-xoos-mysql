@@ -8,7 +8,7 @@ DB::Xoos::MySQL is an ORM designed for convenience and ease of use.  It is based
 
 Below is a minimum viable model setup for your app.  Xoos does _not_ create the table for you, that is up to you.
 
-## autoloading models (only available in MySQL at the moment)
+## autoloading model
 
 ### lib/app.pm6
 ```perl6
