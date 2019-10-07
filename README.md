@@ -2,7 +2,7 @@
 
 DB::Xoos::MySQL is an ORM designed for convenience and ease of use.  It is based upon [DB::Xoos](https://github.com/tony-o/p6-xoo), provides roles and enhancements and allows you to connect to postgres for ultimate magic.
 
-[![CircleCI](https://circleci.com/gh/tony-o/p6-db-xoos-mysql.svg?style=svg)](https://circleci.com/gh/tony-o/p6-db-xoos-mysql)
+[![CircleCI](https://circleci.com/gh/tony-o/db-xoos-mysql/tree/master.svg?style=svg)](https://circleci.com/gh/tony-o/db-xoos-mysql/tree/master)
 
 # Usage
 
