@@ -7,7 +7,7 @@ sub get-db(*%_) is export {
   my $dsn = %*ENV<XOOS_TEST> // 'mysql://xoos:@127.0.0.1/xoos';
   my $promise = Promise.new;
   await Promise.anyof(
- #   start { sleep 5; try $promise.break; },
+    start { sleep 5; try $promise.break; },
     start {
       CATCH { .say; }
       $db = DB::Xoos::MySQL.new(:prefix(''));
@@ -18,6 +18,7 @@ sub get-db(*%_) is export {
   );
 
   return $db if $promise.status ~~ Kept;
+  warn ' DID NOT CONNECT ';
   Nil;
 }
 
