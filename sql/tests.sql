@@ -4,7 +4,7 @@ create table customers (
 );
 
 create table orders (
-  id serial not null primary key,
+  id integer not null primary key,
   customer integer not null,
   value float,
   foreign key(customer) references customers(id)

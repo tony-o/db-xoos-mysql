@@ -9,7 +9,7 @@ sub get-db(*%_) is export {
   await Promise.anyof(
     start { sleep 5; try $promise.break; },
     start {
-      CATCH { .say; }
+      CATCH { default { .say; } }
       $db = DB::Xoos::MySQL.new(:prefix(''));
       $db.connect($dsn, |%_);
       $db = Nil unless $db.db.query('select 1 as x;').hash<x> == 1;
