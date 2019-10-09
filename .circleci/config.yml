@@ -4,7 +4,7 @@ jobs:
     docker:
       - image: tonyodell/rakudo-nightly:latest
         environment:
-          XOOS_TEST: mysql://user:passw0rd@localhost/test_db
+          XOOS_TEST: mysql://user:passw0rd@127.0.0.1/test_db
       - image: circleci/mysql:8.0.4
         environment:
           MYSQL_ROOT_PASSWORD: rootpw
