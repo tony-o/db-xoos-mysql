@@ -20,6 +20,7 @@ jobs:
           name: install build deps
           command: |
               apt install -y default-mysql-client libmysqlclient-dev
+              zef update
               zef install --deps-only .
       - run:
           name: setup db
