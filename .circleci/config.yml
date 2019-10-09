@@ -19,8 +19,7 @@ jobs:
       - run: 
           name: install build deps
           command: |
-              apt install -y default-mysql-client libmysqlclient-dev
-              zef update
+              apt install -y libmysqlclient-dev
               zef install --deps-only .
       - run:
           name: setup db
@@ -29,5 +28,5 @@ jobs:
       - run:
           name: test 
           command: |
-              find t -type f | egrep '\.t$' | xargs -n 1 perl6 -Ilib 
+              find t -type f | egrep '\.t$' | sort | xargs -n 1 perl6 -Ilib 
               zef test .
