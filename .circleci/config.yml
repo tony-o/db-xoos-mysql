@@ -28,5 +28,5 @@ jobs:
       - run:
           name: test 
           command: |
-              prove -e 'perl6 -Ilib' t
+              find t -type f | egrep '\.t$' | xargs -n 1 perl6 -Ilib 
               zef test .
