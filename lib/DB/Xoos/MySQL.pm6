@@ -30,12 +30,6 @@ multi method connect(Str:D $dsn, :%options?) {
   %db-opts<user>     = %connect-params<user> if %connect-params<user>;
   %db-opts<password> = %connect-params<pass> if %connect-params<pass>;
 
-  my $conninfo = join " ",
-    ('dbname=' ~ %db-opts<database>),
-    ('host=' ~ %db-opts<host>),
-    ('user=' ~ %db-opts<user> if %db-opts<user>.defined),
-    ('password=' ~ %db-opts<password> if %db-opts<password>.defined);
-
   $db = DB::MySQL.new(
     :database(%connect-params<db>),
     :host(%connect-params<host>),

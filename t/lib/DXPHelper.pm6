@@ -1,7 +1,7 @@
 use DB::Xoos::MySQL;
 unit module DXPHelper;
 
-my $db;
+state $db;
 sub get-db(*%_) is export {
   return $db if $db ~~ DB::Xoos::MySQL;
   my $dsn = %*ENV<XOOS_TEST> // 'mysql://xoos:@127.0.0.1/xoos';

@@ -26,8 +26,8 @@ multi method search(%filters, %options?) {
     %option = %options;
   }
   my $clone = self.clone;
-  $clone!set-filter(%filter);
-  $clone!set-option(%option);
+  $clone.set-filter(%filter);
+  $clone.set-option(%option);
   $clone;
 }
 
@@ -53,15 +53,17 @@ method all(%filter?) {
 
 method !iterate(Bool :$next = False) {
   my $row;
+  my $pk  = self.columns.grep({ $_.value<is-primary-key> }).first.key; 
   if $next && $!iter {
-    return Nil if $!iter<i> >= $!iter<s>.elems;
-    $row = $!iter<s>[$!iter<i>++];
+    $row = self.search($!iter, %(%!option, { order-by => { $pk => 'ASC' } })).sql;
+    $row = self.db.query($row<sql>, |$row<params>).hash;
+    return Nil unless $row;
+    $!iter = { %!filter, $pk => { '>' => $row{$pk} }, };
     $row = self.row.new(:field-data($row), :!is-dirty, :db(self.db), :model(self), :field-changes({}));
     $row does DB::Xoos::MySQL::Row;
     return $row;
   }
-  my $sql = self.sql;
-  $!iter  = { i => 0, s => self.db.db.cursor($sql<sql>, |$sql<params>, :hash) };
+  $!iter = { %!filter, $pk => { '>' => -1 }, };
   self!iterate(:next);
 }
 
@@ -73,7 +75,7 @@ method first(%filter?) {
 method insert(%data) {
   die unless self.^can('table-name');
   my $sql = self.sql(:type<insert>, :update(%data));
-  my $r = self.db.query($sql<sql>, |$sql<params>);
+  my $r = self.db.query($sql<sql>, |@($sql<params>));
   Nil;
 }
 method next(%filter?) {
@@ -95,7 +97,7 @@ method update(%values, %filter?) {
   die 'Please connect to a database first'
     unless self.^can('db');
   my $sql = self.sql(:type<update>, :update(%values));
-  self.db.query($sql<sql>, |$sql<params>) // 0;
+  self.db.query($sql<sql>, |$sql<params>);
 }
 method delete(%filter?) {
   return self.search(%filter).delete if %filter;
@@ -131,7 +133,7 @@ method sql($page-start?, $page-size?, :$field-override = Nil, :$type = 'select',
       $sql ~= 'INSERT INTO ';
       $sql ~= self!gen-id(self.table-name);
       $sql ~= ' ('~self!gen-field-ins(%update)~') ';
-      $sql ~= 'VALUES ('~(1..@*params.elems).map({ '$' ~ $_ }).join(', ') ~ ')';
+      $sql ~= 'VALUES ('~(1..@*params.elems).map({ '?' }).join(', ') ~ ')';
     }
   };
   { sql => $sql, params => @*params };
@@ -157,13 +159,13 @@ method !gen-field-ins(%fields) {
   @cols.join(', ');
 }
 
-method !set-filter(%filter) { %!filter = %filter; }
-method !set-option(%option) { %!option = %option; }
+method set-filter(%filter) { %!filter := %filter; }
+method set-option(%option) { %!option := %option; }
 method !gen-id($value, :$table?) {
   my @s = $value.split('.');
   @s.prepend($table)
     if $table.defined && $table ne '' && @s.elems == 1;
-  "\"{@s.join('"."')}\"";
+  "{$!ident}{@s.join("{$!ident}.{$!ident}")}{$!ident}";
 }
 
 method !gen-update-values(%values) {
@@ -239,7 +241,7 @@ method !gen-quote(\val, $force = False, :$table) {
     return self!gen-id(val, :$table);
   } else {
     @*params.push: val;
-    return '$' ~ @*params.elems;
+    return '?';
   }
 }
 method !gen-order {
