@@ -15,7 +15,7 @@ my %translate =
 ;
 
 sub column-sort {
-  ($^a.value<is-primary-key>//False) && !($^b.value<is-primary-key>//False) 
+  ($^a.value<is-primary-key>//False) && !($^b.value<is-primary-key>//False)
     ?? -1
     !! (!$^a.value<is-primary-key>//False) && ($^b.value<is-primary-key>//False)
       ?? 1
@@ -32,7 +32,7 @@ sub generate-structure (Str :$dsn?, :$db-conn?, Bool :$dry-run = False, :@tables
 
     CATCH { default { .say; } }
     $db = DB::MySQL.new(:%parsed-dsn);
-      
+
   }
   CATCH { default { .say; } };
   my @define-tables = @tables.elems ?? @tables !! $db.db.query(%queries<list-tables>).arrays.map({ $_[0] });
