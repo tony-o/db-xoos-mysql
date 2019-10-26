@@ -3,13 +3,16 @@ use DXPHelper;
 use Test;
 
 state $db;
+my $cwd = $*CWD;
 try {
   CATCH { default {
     plan 1;
     ok True, 'Skipping tests, unable to connect to mysql';
     exit 0;
   } }
+  $*CWD = 't'.IO;
   $db = get-db(options => { :dynamic, model-dirs => [ 't/' ]});
+  $*CWD = $cwd;
   die 'no connection' unless $db.db.query('select 1;').array;
 }
 
