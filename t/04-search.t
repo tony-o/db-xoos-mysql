@@ -1,7 +1,7 @@
 use lib 't/lib';
 use DXPHelper;
 use Test;
-use DB::Xoos::MySQL::Row;
+use DB::Xoos::Row;
 
 state $db;
 try {
@@ -34,7 +34,7 @@ subtest {
   is $stay.count, 0, 'stay did not get modified';
   @obj = $model.all;
   ok @obj.elems > 0, 'insert went ok';
-  ok @obj[0] ~~ DB::Xoos::MySQL::Row, 'object does DB::Xoos::MySQL::Row';
+  ok @obj[0] ~~ DB::Xoos::Row, 'object does DB::Xoos::Row';
   ok @obj.grep({ .name eq "test$uid" }).elems == 1, 'found our test obj';
   is $obj.name, @obj.grep({ .name eq "test$uid" })[0].name, 'got the right name for direct search';
 
