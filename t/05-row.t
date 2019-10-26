@@ -1,7 +1,7 @@
 use lib 't/lib';
 use DXPHelper;
 use Test;
-use DB::Xoos::Role::Row;
+use DB::Xoos::Row;
 
 state $db;
 try {
@@ -26,7 +26,7 @@ subtest {
   $model.insert({ name => 'hello world' });
   $obj = $model.search({ :name('hello world') }).first;
 
-  ok $obj ~~ DB::Xoos::Role::Row, 'obj ~~ DB::Xoos::Role::Row';
+  ok $obj ~~ DB::Xoos::Row, 'obj ~~ DB::Xoos::Row';
   is $obj.name, 'hello world', 'name is right';
   $obj.name('whateverable');
   is $obj.name, 'whateverable', 'returns dirty column';

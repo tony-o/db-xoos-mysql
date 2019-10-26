@@ -56,8 +56,8 @@ my $xyz-orders = $xyz.orders.count;
 
 ### lib/Model/Customer.pm6
 ```perl6
-use DB::Xoos::Role::Model;
-unit class Model::Customer does DB::Xoos::Role::Model['customer'];
+use DB::Xoos::Model;
+unit class Model::Customer does DB::Xoos::Model['customer'];
 
 has @.columns = [
   id => {
@@ -79,18 +79,18 @@ has @.relations = [
 ];
 ```
 
-# role DB::Xoos::Role::Model
+# role DB::Xoos::Model
 
 What is a model?  A model is essentially a table in your database.  Your ::Model::X is pretty barebones, in this module you'll defined `@.columns` and `@.relations` (if there are any relations).
 
 ## Example
 
 ```perl6
-use DB::Xoos::Role::Model;
+use DB::Xoos::Model;
 # the second argument below is optional and also accepts a type.
 # if the arg is omitted then it attempts to auto load ::Row::Customer
 # if it fails to auto load then it uses an anonymous Row and adds convenience methods to that
-unit class X::Model::Customer does DB::Xoos::Role::Model['customer', 'X::Row::Customer']; 
+unit class X::Model::Customer does DB::Xoos::Model['customer', 'X::Row::Customer']; 
 
 has @.columns = [
   id => {
@@ -132,7 +132,7 @@ In this example we're creating a customer model with columns `id, name, contact,
 
 ### Breakdown
 
-`class :: does DB::Xoos::Role::Model['table-name', 'Optional String or Type'];`
+`class :: does DB::Xoos::Model['table-name', 'Optional String or Type'];`
 
 Here you can see the role accepts one or two parameters, the first is the DB table name, the latter is a String or Type of the row you'd like to use for this model.  If no row is found then Xoos will create a generic row and add helper methods for you using the model's column data.
 
@@ -193,14 +193,14 @@ Creates a new row with %field-data.
 
 ## Convenience methods
 
-DB::Xoos::Role::Model inheritance allows you to have convenience methods, these methods can act on whatever the current set of filters is.
+DB::Xoos::Model inheritance allows you to have convenience methods, these methods can act on whatever the current set of filters is.
 
 Consider the following:
 
 Convenience model definition:
 
 ```perl6
-class X::Model::Customer does DB::Xoos::Role::Model['customer'];
+class X::Model::Customer does DB::Xoos::Model['customer'];
 
 # columns and relations
 
@@ -223,11 +223,11 @@ $single-customer.remove-closed-orders;
 # this removes all orders for customers with id = 5
 ```
 
-# role DB::Xoos::Role::Row
+# role DB::Xoos::Row
 
 A role to apply to your `::Row::Customer`.  If there is no `::Row::Customer` a generic row is created using the column and relationship data specified in the corresponding `Model` and this file is only really necessary if you want to add convenience methods.
 
-When a `class :: does DB::Xoos::Role::Row`, it receives the info from the model and adds the methods for setting/getting field data.
+When a `class :: does DB::Xoos::Row`, it receives the info from the model and adds the methods for setting/getting field data.
 
 With the model definition above:
 
