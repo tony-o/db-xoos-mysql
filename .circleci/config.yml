@@ -26,7 +26,14 @@ jobs:
           command: |
               mysql -h 127.0.0.1 -u user -ppassw0rd test_db < ./sql/tests.sql
       - run:
-          name: test 
+          name: debug
+          command: |
+            find . -type f
+      - run:
+          name: test-output 
           command: |
               find t -type f | egrep '\.t$' | sort | xargs -n 1 perl6 -Ilib 
+      - run:
+          name: test-zef
+          command: |
               zef test .
