@@ -1,6 +1,6 @@
 use DB::Xoos::Util::DSN;
 use DB::MySQL;
-unit module DB::Xoos::MySQL::Util::Dynamic;
+unit module DB::Xoos::Mysql::Util::Dynamic;
 
 my %queries =
   list-tables    => "SELECT table_name FROM information_schema.tables WHERE table_schema=database() AND table_type='BASE TABLE';",
